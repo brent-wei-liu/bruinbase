@@ -112,7 +112,7 @@ RC PageFile::write(PageId pid, const void* buffer)
   // if the page is in read cache, invalidate it
   for (int i = 0; i < CACHE_COUNT; i++) {
     if (readCache[i].fd == fd && readCache[i].pid == pid &&
-        readCache[i].lastAccessed != 0) {
+       readCache[i].lastAccessed != 0) {
        readCache[i].fd = 0;
        readCache[i].pid = 0;
        readCache[i].lastAccessed = 0;

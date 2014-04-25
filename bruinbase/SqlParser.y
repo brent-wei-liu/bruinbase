@@ -53,11 +53,11 @@ commands:
 	;
 
 command:
-        load_command { fprintf(stdout, "Bruinbase> "); }
+      load_command   { fprintf(stdout, "Bruinbase> "); }
 	| select_command { fprintf(stdout, "Bruinbase> "); }
 	| quit_command
-	| error LF { fprintf(stdout, "Bruinbase> "); }
-	| LF { fprintf(stdout, "Bruinbase> "); }
+	| error LF       { fprintf(stdout, "Bruinbase> "); }
+	| LF             { fprintf(stdout, "Bruinbase> "); }
 	;
 
 quit_command:

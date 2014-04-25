@@ -130,9 +130,25 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-  /* your code here */
-
-  return 0;
+    cout<< "LOAD "<<table<<" FROM "<<loadfile<<endl;
+    RecordFile rf( table + ".tbl", 'w');
+    ifstream readfile(loadfile.c_str() );
+    string line;
+    while(getline(readfile,line)) {
+        int key;
+        string value;
+        parseLoadLine(line,key,value);
+        //printf("key:%d value:%s\n",key,value.c_str());
+        RecordId rid;
+        RC rc;
+        rc = rf.append(key,value,rid);
+        if(rc!=0){
+            cout<<"error"<<endl;
+            return rc; 
+        }
+    }
+    rf.close();
+    return 0;
 }
 
 RC SqlEngine::parseLoadLine(const string& line, int& key, string& value)

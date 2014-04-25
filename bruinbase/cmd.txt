@@ -1,0 +1,6 @@
+Part A: Implement LOAD Command
+    ./bruinbase
+    load movie from 'movie.del'
+    select count(*) from movie
+    select * from movie
+
