@@ -13,6 +13,7 @@
 #include "Bruinbase.h"
 #include "SqlEngine.h"
 
+
 using namespace std;
 
 // external functions and variables for load file and sql command parsing 
@@ -130,8 +131,26 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
-    cout<< "LOAD "<<table<<" FROM "<<loadfile<<endl;
-    RecordFile rf( table + ".tbl", 'w');
+    RC rc = 0;
+    cout<< "LOAD "<<table<<" FROM "<<loadfile;
+    if(index)   cout<<" WITH INDEX";
+    cout<<endl;
+    RecordFile rf;
+    BTreeIndex idx;
+    rc = rf.open( table + ".tbl", 'w');
+    if(rc < 0){
+        cout<<"error:"<<table<<".tbl"<<endl;
+        return rc;
+    }
+    
+    if(index){
+        rc = idx.open( table + ".idx", 'w'); 
+        if(rc<0) {
+            cout<<"error:"<<table<<".idx"<<endl;
+            return rc;
+        }
+    }
+ 
     ifstream readfile(loadfile.c_str() );
     string line;
     while(getline(readfile,line)) {
@@ -142,13 +161,18 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
         RecordId rid;
         RC rc;
         rc = rf.append(key,value,rid);
-        if(rc!=0){
-            cout<<"error"<<endl;
-            return rc; 
+        if(rc < 0)  goto LOAD_EXIT;
+      
+        if(index){   
+            rc = idx.insert(key, rid);  
+            if(rc < 0) goto LOAD_EXIT;
         }
     }
+LOAD_EXIT:    
+    idx.close();
     rf.close();
-    return 0;
+    if(rc<0) cout<<"error"<<endl;
+    return rc;
 }
 
 RC SqlEngine::parseLoadLine(const string& line, int& key, string& value)

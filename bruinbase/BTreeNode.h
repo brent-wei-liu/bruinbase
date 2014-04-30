@@ -12,12 +12,13 @@
 
 #include "RecordFile.h"
 #include "PageFile.h"
-
+typedef int KeyType;
 /**
  * BTLeafNode: The class representing a B+tree leaf node.
  */
 class BTLeafNode {
   public:
+    BTLeafNode();
    /**
     * Insert the (key, rid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
@@ -25,7 +26,7 @@ class BTLeafNode {
     * @param rid[IN] the RecordId to insert
     * @return 0 if successful. Return an error code if the node is full.
     */
-    RC insert(int key, const RecordId& rid);
+    RC insert(KeyType key, const RecordId& rid);
 
    /**
     * Insert the (key, rid) pair to the node
@@ -38,7 +39,7 @@ class BTLeafNode {
     * @param siblingKey[OUT] the first key in the sibling node after split.
     * @return 0 if successful. Return an error code if there is an error.
     */
-    RC insertAndSplit(int key, const RecordId& rid, BTLeafNode& sibling, int& siblingKey);
+    RC insertAndSplit(KeyType key, const RecordId& rid, BTLeafNode& sibling, int& siblingKey);
 
    /**
     * Find the index entry whose key value is larger than or equal to searchKey
@@ -102,6 +103,9 @@ class BTLeafNode {
     * that contains the node.
     */
     char buffer[PageFile::PAGE_SIZE];
+    KeyType * keys;
+    RecordId * records;
+    int keyCount;
 }; 
 
 
@@ -110,6 +114,10 @@ class BTLeafNode {
  */
 class BTNonLeafNode {
   public:
+    //first 4 bytes store # keys,  
+    static const int KEYS_PER_PAGE = (PageFile::PAGE_SIZE - sizeof(int))/ (sizeof(KeyType)+sizeof(PageId)) - 1;  
+    static const int PIDS_PER_PAGE =  KEYS_PER_PAGE + 1;
+    BTNonLeafNode();  
    /**
     * Insert a (key, pid) pair to the node.
     * Remember that all keys inside a B+tree node should be kept sorted.
@@ -117,7 +125,7 @@ class BTNonLeafNode {
     * @param pid[IN] the PageId to insert
     * @return 0 if successful. Return an error code if the node is full.
     */
-    RC insert(int key, PageId pid);
+    RC insert(KeyType key, PageId pid);
 
    /**
     * Insert the (key, pid) pair to the node
@@ -131,7 +139,7 @@ class BTNonLeafNode {
     * @param midKey[OUT] the key in the middle after the split. This key should be inserted to the parent node.
     * @return 0 if successful. Return an error code if there is an error.
     */
-    RC insertAndSplit(int key, PageId pid, BTNonLeafNode& sibling, int& midKey);
+    RC insertAndSplit(KeyType key, PageId pid, BTNonLeafNode& sibling, int& midKey);
 
    /**
     * Given the searchKey, find the child-node pointer to follow and
@@ -150,7 +158,7 @@ class BTNonLeafNode {
     * @param pid2[IN] the PageId to insert behind the key
     * @return 0 if successful. Return an error code if there is an error.
     */
-    RC initializeRoot(PageId pid1, int key, PageId pid2);
+    RC initializeRoot(PageId pid1, KeyType key, PageId pid2);
 
    /**
     * Return the number of keys stored in the node.
@@ -180,6 +188,9 @@ class BTNonLeafNode {
     * that contains the node.
     */
     char buffer[PageFile::PAGE_SIZE];
+    KeyType * keys;
+    PageId * pids;
+    int keyCount;
 }; 
 
 #endif /* BTNODE_H */

@@ -12,6 +12,12 @@
 
 using namespace std;
 
+static PageId getRootPid(const char* page);
+static void setRootPid(char* page, PageId pid);
+
+static int getTreeHeight(const char* page);
+static void setTreeHeight(char* page, int height);
+
 /*
  * BTreeIndex constructor
  */
@@ -29,7 +35,38 @@ BTreeIndex::BTreeIndex()
  */
 RC BTreeIndex::open(const string& indexname, char mode)
 {
+  RC   rc;
+  char page[PageFile::PAGE_SIZE];
+
+  // open the page file
+  if ((rc = pf.open(indexname, mode)) < 0) return rc;
+
+  //
+  // in the rest of this function, we set the rootPid and  treeHeight
+  //
+
+  // if the end pid is zero, the file is empty.
+  // set the end record id to (0, 0).
+  if (pf.endPid() == 0) {
+    rootPid = -1;
+    treeHeight = 0;
     return 0;
+  }
+
+  if ((rc = pf.read(0, page)) < 0) {
+    // an error occurred during page read
+    rootPid  = -1;
+    treeHeight = 0;
+    pf.close();
+    return rc;
+  }
+
+  // get rootPid and treeHeight in the first page
+  rootPid = getRootPid(page);
+  treeHeight = getTreeHeight(page);
+
+  return 0;
+
 }
 
 /*
@@ -38,7 +75,17 @@ RC BTreeIndex::open(const string& indexname, char mode)
  */
 RC BTreeIndex::close()
 {
-    return 0;
+  RC rc;
+  char page[PageFile::PAGE_SIZE];
+  memset(page,0,PageFile::PAGE_SIZE);
+  sprintf(page,"%d %d\n",rootPid,treeHeight);
+  //setRootPid(page, rootPid);
+  //setTreeHeight(page, treeHeight);
+  if ((rc = pf.write(0, page)) < 0) return rc;
+
+  rootPid = 0;
+  treeHeight = 0;
+  return pf.close();
 }
 
 /*
@@ -49,7 +96,28 @@ RC BTreeIndex::close()
  */
 RC BTreeIndex::insert(int key, const RecordId& rid)
 {
-    return 0;
+  RC   rc;
+  char page[PageFile::PAGE_SIZE];
+  BTNonLeafNode root;
+  if( rootPid == -1){
+      BTLeafNode lnode,rnode;
+      root.initializeRoot(2,key,3);
+      rnode.insert(key, rid);
+      
+      root.write(1,pf);
+      lnode.write(2,pf);
+      rnode.write(3,pf);
+
+      rootPid = 1; 
+      treeHeight = 1;
+  }
+  //memset(page,0,PageFile::PAGE_SIZE);
+  //sprintf(page,"\n%d %d\n",key,rid);
+
+  // write the page to the disk
+  //if ((rc = pf.write(rootPid, page)) < 0) return rc;
+
+  return 0;
 }
 
 /*
@@ -87,4 +155,36 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
 RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
 {
     return 0;
+}
+
+static PageId getRootPid(const char* page)
+{
+  PageId rootPid;
+
+  // the first four bytes of a page contains rootPid in the page
+  memcpy(&rootPid, page, sizeof(PageId));
+  return rootPid;
+}
+
+
+static void setRootPid(char* page, PageId pid)
+{
+  // the first four bytes of a page contains rootPid in the page
+  memcpy(page, &pid, sizeof(PageId));
+}
+
+static int getTreeHeight(const char* page)
+{
+  int height;
+
+  // the second four bytes of a page contains tree height in the page
+  memcpy(&height, page, sizeof(int));
+  return height;
+}
+
+
+static void setTreeHeight(char* page, int height)
+{
+  // the second four bytes of a page contains tree height in the page
+  memcpy(page, &height, sizeof(int));
 }
