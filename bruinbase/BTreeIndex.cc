@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2008 by The Regents of the University of California
+ * Copyright (C) 2014 by The Regents of the Floridar International University
  * Redistribution of this file is permitted under the terms of the GNU
  * Public License (GPL).
  *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
+ * @author Wei Liu <wliu015@cs.fiu.edu>
+ * @date 5/12/2014
  */
  
 #include "BTreeIndex.h"
@@ -136,7 +136,7 @@ ERROR:
  * @param rid[IN] the RecordId for the record being inserted into the index
  * @return error code. 0 if no error
  */
-RC BTreeIndex::insert(int key, const RecordId& rid)
+RC BTreeIndex::insert(KeyType key, const RecordId& rid)
 {
   RC   rc;
   PageId pid;
@@ -220,7 +220,7 @@ ERROR:
  *                    with the key value.
  * @return error code. 0 if no error.
  */
-RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
+RC BTreeIndex::locate(KeyType searchKey, IndexCursor& cursor)
 {
     return 0;
 }
@@ -233,7 +233,7 @@ RC BTreeIndex::locate(int searchKey, IndexCursor& cursor)
  * @param rid[OUT] the RecordId stored at the index cursor location.
  * @return error code. 0 if no error
  */
-RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
+RC BTreeIndex::readForward(IndexCursor& cursor, KeyType& key, RecordId& rid)
 {
     return 0;
 }

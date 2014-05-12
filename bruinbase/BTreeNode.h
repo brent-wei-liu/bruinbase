@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2008 by The Regents of the University of California
+ * Copyright (C) 2014 by The Regents of the Floridar International University
  * Redistribution of this file is permitted under the terms of the GNU
  * Public License (GPL).
  *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 5/28/2008
+ * @author Wei Liu <wliu015@cs.fiu.edu>
+ * @date 5/12/2014
  */
 
 #ifndef BTNODE_H

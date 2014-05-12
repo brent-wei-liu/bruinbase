@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2008 by The Regents of the University of California
+ * Copyright (C) 2014 by The Regents of the Floridar International University
  * Redistribution of this file is permitted under the terms of the GNU
  * Public License (GPL).
  *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
+ * @author Wei Liu <wliu015@cs.fiu.edu>
+ * @date 5/12/2014
  */
 
 #ifndef BTREEINDEX_H
@@ -56,7 +56,7 @@ class BTreeIndex {
    * @param rid[IN] the RecordId for the record being inserted into the index
    * @return error code. 0 if no error
    */
-  RC insert(int key, const RecordId& rid);
+  RC insert(KeyType key, const RecordId& rid);
 
   /**
    * Find the leaf-node index entry whose key value is larger than or
@@ -78,7 +78,7 @@ class BTreeIndex {
    * with the key value
    * @return error code. 0 if no error.
    */
-  RC locate(int searchKey, IndexCursor& cursor);
+  RC locate(KeyType searchKey, IndexCursor& cursor);
 
   /**
    * Read the (key, rid) pair at the location specified by the index cursor,
@@ -88,7 +88,7 @@ class BTreeIndex {
    * @param rid[OUT] the RecordId stored at the index cursor location
    * @return error code. 0 if no error
    */
-  RC readForward(IndexCursor& cursor, int& key, RecordId& rid);
+  RC readForward(IndexCursor& cursor, KeyType& key, RecordId& rid);
   
   int newPid;
   RC printTree();
