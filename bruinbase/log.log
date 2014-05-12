@@ -1,0 +1,894 @@
+Bruinbase> LOAD test FROM test.del WITH INDEX
+
+**************** Insert key:2342 into Tree ******************
+initializeRoot keys[0x9]:0x926 pids[0x3d]
+WARNING:pid[-1] != p[1]
+WARNING:pid[-1] != p[2]
+WARNING:pid[-1] != p[3]
+insert pid[3] : key[2342] -> keys[0]
+pid[3] n[1] Max_n[9] t[5]:
+position:0	key:2342
+
+
+**************** Insert key:272 into Tree ******************
+insert to non leaf node pid[1] : key[272]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:0
+
+Read Leaf Node page:
+pid[2] n[0] Max_n[9] t[5]:
+
+insert pid[2] : key[272] -> keys[0]
+pid[2] n[1] Max_n[9] t[5]:
+position:0	key:272
+
+
+**************** Insert key:2634 into Tree ******************
+insert to non leaf node pid[1] : key[2634]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[1] Max_n[9] t[5]:
+position:0	key:2342
+
+insert pid[3] : key[2634] -> keys[1]
+pid[3] n[2] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+
+
+**************** Insert key:3992 into Tree ******************
+insert to non leaf node pid[1] : key[3992]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[2] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+
+insert pid[3] : key[3992] -> keys[2]
+pid[3] n[3] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:3992
+
+
+**************** Insert key:2965 into Tree ******************
+insert to non leaf node pid[1] : key[2965]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[3] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:3992
+
+insert pid[3] : key[2965] -> keys[2]
+pid[3] n[4] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3992
+
+
+**************** Insert key:3084 into Tree ******************
+insert to non leaf node pid[1] : key[3084]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[4] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3992
+
+insert pid[3] : key[3084] -> keys[3]
+pid[3] n[5] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3992
+
+
+**************** Insert key:2244 into Tree ******************
+insert to non leaf node pid[1] : key[2244]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:0
+
+Read Leaf Node page:
+pid[2] n[1] Max_n[9] t[5]:
+position:0	key:272
+
+insert pid[2] : key[2244] -> keys[1]
+pid[2] n[2] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:2244
+
+
+**************** Insert key:1578 into Tree ******************
+insert to non leaf node pid[1] : key[1578]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:0
+
+Read Leaf Node page:
+pid[2] n[2] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:2244
+
+insert pid[2] : key[1578] -> keys[1]
+pid[2] n[3] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:1578
+position:2	key:2244
+
+
+**************** Insert key:3229 into Tree ******************
+insert to non leaf node pid[1] : key[3229]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[5] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3992
+
+insert pid[3] : key[3229] -> keys[4]
+pid[3] n[6] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3992
+
+
+**************** Insert key:4589 into Tree ******************
+insert to non leaf node pid[1] : key[4589]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[6] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3992
+
+insert pid[3] : key[4589] -> keys[6]
+pid[3] n[7] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3992
+position:6	key:4589
+
+
+**************** Insert key:528 into Tree ******************
+insert to non leaf node pid[1] : key[528]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:0
+
+Read Leaf Node page:
+pid[2] n[3] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:1578
+position:2	key:2244
+
+insert pid[2] : key[528] -> keys[1]
+pid[2] n[4] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1578
+position:3	key:2244
+
+
+**************** Insert key:1390 into Tree ******************
+insert to non leaf node pid[1] : key[1390]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:0
+
+Read Leaf Node page:
+pid[2] n[4] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1578
+position:3	key:2244
+
+insert pid[2] : key[1390] -> keys[2]
+pid[2] n[5] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1390
+position:3	key:1578
+position:4	key:2244
+
+
+**************** Insert key:3297 into Tree ******************
+insert to non leaf node pid[1] : key[3297]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[7] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3992
+position:6	key:4589
+
+insert pid[3] : key[3297] -> keys[5]
+pid[3] n[8] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3297
+position:6	key:3992
+position:7	key:4589
+
+
+**************** Insert key:3561 into Tree ******************
+insert to non leaf node pid[1] : key[3561]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[8] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3297
+position:6	key:3992
+position:7	key:4589
+
+insert pid[3] : key[3561] -> keys[6]
+pid[3] n[9] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3297
+position:6	key:3561
+position:7	key:3992
+position:8	key:4589
+
+
+**************** Insert key:3619 into Tree ******************
+insert to non leaf node pid[1] : key[3619]
+pid[1] n[1] Max_n[13] t[7]:
+2342 
+2 3 
+i:1
+
+Read Leaf Node page:
+pid[3] n[9] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3229
+position:5	key:3297
+position:6	key:3561
+position:7	key:3992
+position:8	key:4589
+
+Split Child pid:3  newPid:4
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+pid[3] n[4] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+
+pid[4] n[5] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3992
+position:4	key:4589
+
+insert pid[4] : key[3619] -> keys[3]
+pid[4] n[6] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4589
+
+
+**************** Insert key:4289 into Tree ******************
+insert to non leaf node pid[1] : key[4289]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:2
+
+Read Leaf Node page:
+pid[4] n[6] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4589
+
+insert pid[4] : key[4289] -> keys[5]
+pid[4] n[7] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4289
+position:6	key:4589
+
+
+**************** Insert key:4583 into Tree ******************
+insert to non leaf node pid[1] : key[4583]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:2
+
+Read Leaf Node page:
+pid[4] n[7] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4289
+position:6	key:4589
+
+insert pid[4] : key[4583] -> keys[6]
+pid[4] n[8] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4289
+position:6	key:4583
+position:7	key:4589
+
+
+**************** Insert key:1208 into Tree ******************
+insert to non leaf node pid[1] : key[1208]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:0
+
+Read Leaf Node page:
+pid[2] n[5] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1390
+position:3	key:1578
+position:4	key:2244
+
+insert pid[2] : key[1208] -> keys[2]
+pid[2] n[6] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1208
+position:3	key:1390
+position:4	key:1578
+position:5	key:2244
+
+
+**************** Insert key:598 into Tree ******************
+insert to non leaf node pid[1] : key[598]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:0
+
+Read Leaf Node page:
+pid[2] n[6] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:1208
+position:3	key:1390
+position:4	key:1578
+position:5	key:2244
+
+insert pid[2] : key[598] -> keys[2]
+pid[2] n[7] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:598
+position:3	key:1208
+position:4	key:1390
+position:5	key:1578
+position:6	key:2244
+
+
+**************** Insert key:3953 into Tree ******************
+insert to non leaf node pid[1] : key[3953]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:2
+
+Read Leaf Node page:
+pid[4] n[8] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3992
+position:5	key:4289
+position:6	key:4583
+position:7	key:4589
+
+insert pid[4] : key[3953] -> keys[4]
+pid[4] n[9] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3953
+position:5	key:3992
+position:6	key:4289
+position:7	key:4583
+position:8	key:4589
+
+
+**************** Insert key:3099 into Tree ******************
+insert to non leaf node pid[1] : key[3099]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:1
+
+Read Leaf Node page:
+pid[3] n[4] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+
+insert pid[3] : key[3099] -> keys[4]
+pid[3] n[5] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3099
+
+
+**************** Insert key:4515 into Tree ******************
+insert to non leaf node pid[1] : key[4515]
+pid[1] n[2] Max_n[13] t[7]:
+2342 3229 
+2 3 4 
+i:2
+
+Read Leaf Node page:
+pid[4] n[9] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+position:4	key:3953
+position:5	key:3992
+position:6	key:4289
+position:7	key:4583
+position:8	key:4589
+
+Split Child pid:4  newPid:5
+pid[1] n[3] Max_n[13] t[7]:
+2342 3229 3953 
+2 3 4 5 
+pid[4] n[4] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+
+pid[5] n[5] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4583
+position:4	key:4589
+
+insert pid[5] : key[4515] -> keys[3]
+pid[5] n[6] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4515
+position:4	key:4583
+position:5	key:4589
+
+
+**************** Insert key:4657 into Tree ******************
+insert to non leaf node pid[1] : key[4657]
+pid[1] n[3] Max_n[13] t[7]:
+2342 3229 3953 
+2 3 4 5 
+i:3
+
+Read Leaf Node page:
+pid[5] n[6] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4515
+position:4	key:4583
+position:5	key:4589
+
+insert pid[5] : key[4657] -> keys[6]
+pid[5] n[7] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4515
+position:4	key:4583
+position:5	key:4589
+position:6	key:4657
+
+
+**************** Insert key:40 into Tree ******************
+insert to non leaf node pid[1] : key[40]
+pid[1] n[3] Max_n[13] t[7]:
+2342 3229 3953 
+2 3 4 5 
+i:0
+
+Read Leaf Node page:
+pid[2] n[7] Max_n[9] t[5]:
+position:0	key:272
+position:1	key:528
+position:2	key:598
+position:3	key:1208
+position:4	key:1390
+position:5	key:1578
+position:6	key:2244
+
+insert pid[2] : key[40] -> keys[0]
+pid[2] n[8] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:272
+position:2	key:528
+position:3	key:598
+position:4	key:1208
+position:5	key:1390
+position:6	key:1578
+position:7	key:2244
+
+
+**************** Insert key:173 into Tree ******************
+insert to non leaf node pid[1] : key[173]
+pid[1] n[3] Max_n[13] t[7]:
+2342 3229 3953 
+2 3 4 5 
+i:0
+
+Read Leaf Node page:
+pid[2] n[8] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:272
+position:2	key:528
+position:3	key:598
+position:4	key:1208
+position:5	key:1390
+position:6	key:1578
+position:7	key:2244
+
+insert pid[2] : key[173] -> keys[1]
+pid[2] n[9] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:272
+position:3	key:528
+position:4	key:598
+position:5	key:1208
+position:6	key:1390
+position:7	key:1578
+position:8	key:2244
+
+
+**************** Insert key:175 into Tree ******************
+insert to non leaf node pid[1] : key[175]
+pid[1] n[3] Max_n[13] t[7]:
+2342 3229 3953 
+2 3 4 5 
+i:0
+
+Read Leaf Node page:
+pid[2] n[9] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:272
+position:3	key:528
+position:4	key:598
+position:5	key:1208
+position:6	key:1390
+position:7	key:1578
+position:8	key:2244
+
+Split Child pid:2  newPid:6
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+pid[2] n[4] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:272
+position:3	key:528
+
+pid[6] n[5] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:1208
+position:2	key:1390
+position:3	key:1578
+position:4	key:2244
+
+insert pid[2] : key[175] -> keys[2]
+pid[2] n[5] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:175
+position:3	key:272
+position:4	key:528
+
+
+**************** Insert key:841 into Tree ******************
+insert to non leaf node pid[1] : key[841]
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+i:1
+
+Read Leaf Node page:
+pid[6] n[5] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:1208
+position:2	key:1390
+position:3	key:1578
+position:4	key:2244
+
+insert pid[6] : key[841] -> keys[1]
+pid[6] n[6] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:1208
+position:3	key:1390
+position:4	key:1578
+position:5	key:2244
+
+
+**************** Insert key:897 into Tree ******************
+insert to non leaf node pid[1] : key[897]
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+i:1
+
+Read Leaf Node page:
+pid[6] n[6] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:1208
+position:3	key:1390
+position:4	key:1578
+position:5	key:2244
+
+insert pid[6] : key[897] -> keys[2]
+pid[6] n[7] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:897
+position:3	key:1208
+position:4	key:1390
+position:5	key:1578
+position:6	key:2244
+
+
+**************** Insert key:1088 into Tree ******************
+insert to non leaf node pid[1] : key[1088]
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+i:1
+
+Read Leaf Node page:
+pid[6] n[7] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:897
+position:3	key:1208
+position:4	key:1390
+position:5	key:1578
+position:6	key:2244
+
+insert pid[6] : key[1088] -> keys[3]
+pid[6] n[8] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:897
+position:3	key:1088
+position:4	key:1208
+position:5	key:1390
+position:6	key:1578
+position:7	key:2244
+
+
+
+****************** PRINT TREE **********************
+rootPid:1 pageNum:7 treeHeight:1
+
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+pid[2] n[5] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:175
+position:3	key:272
+position:4	key:528
+
+pid[3] n[5] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3099
+
+pid[4] n[4] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+
+pid[5] n[7] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4515
+position:4	key:4583
+position:5	key:4589
+position:6	key:4657
+
+pid[6] n[8] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:897
+position:3	key:1088
+position:4	key:1208
+position:5	key:1390
+position:6	key:1578
+position:7	key:2244
+
+
+****************** BFS TREE**********************
+----------------->Non Leaf Node <----------------
+pid[1] n[4] Max_n[13] t[7]:
+598 2342 3229 3953 
+2 6 3 4 5 
+----------------->Leaf Node <----------------
+pid[2] n[5] Max_n[9] t[5]:
+position:0	key:40
+position:1	key:173
+position:2	key:175
+position:3	key:272
+position:4	key:528
+
+----------------->Leaf Node <----------------
+pid[6] n[8] Max_n[9] t[5]:
+position:0	key:598
+position:1	key:841
+position:2	key:897
+position:3	key:1088
+position:4	key:1208
+position:5	key:1390
+position:6	key:1578
+position:7	key:2244
+
+----------------->Leaf Node <----------------
+pid[3] n[5] Max_n[9] t[5]:
+position:0	key:2342
+position:1	key:2634
+position:2	key:2965
+position:3	key:3084
+position:4	key:3099
+
+----------------->Leaf Node <----------------
+pid[4] n[4] Max_n[9] t[5]:
+position:0	key:3229
+position:1	key:3297
+position:2	key:3561
+position:3	key:3619
+
+----------------->Leaf Node <----------------
+pid[5] n[7] Max_n[9] t[5]:
+position:0	key:3953
+position:1	key:3992
+position:2	key:4289
+position:3	key:4515
+position:4	key:4583
+position:5	key:4589
+position:6	key:4657
+
+
+****************** PRINT TREE END**********************
+Bruinbase> 2342 'Last Ride, The'
+272 'Baby Take a Bow'
+2634 'Matter of Life and Death, A'
+3992 'Strangers on a Train'
+2965 'Notre Dame de Paris'
+3084 'Outside the Law'
+2244 'King Creole'
+1578 'G.I. Blues'
+3229 'Plein soleil'
+4589 'Wild Ride, The'
+528 'Born Free'
+1390 'Fantastic Voyage'
+3297 'Professionals, The'
+3561 'Sand Pebbles, The'
+3619 'Seconds'
+4289 'Trouble with Angels, The'
+4583 'Wild Angels, The'
+1208 'Easy Come, Easy Go'
+598 'Brotherhood, The'
+3953 'Stay Away, Joe'
+3099 'Paint Your Wagon'
+4515 'Wedding Party, The'
+4657 'Wrecking Crew, The'
+40 'A.K.A. Cassius Clay'
+173 'Angel Levine, The'
+175 'Angel Unchained'
+841 'Count Yorga, Vampire'
+897 'Cry of the Banshee'
+1088 'Dirty Dingus Magee'
+Bruinbase> 

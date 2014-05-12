@@ -8,8 +8,7 @@
  */
  
 #include "BTreeIndex.h"
-#include "BTreeNode.h"
-
+#include <queue>
 using namespace std;
 
 static PageId getRootPid(const char* page);
@@ -23,7 +22,9 @@ static void setTreeHeight(char* page, int height);
  */
 BTreeIndex::BTreeIndex()
 {
+    newPid = 0;
     rootPid = -1;
+    treeHeight = -1;
 }
 
 /*
@@ -45,6 +46,7 @@ RC BTreeIndex::open(const string& indexname, char mode)
   // in the rest of this function, we set the rootPid and  treeHeight
   //
 
+  newPid = pf.endPid();
   // if the end pid is zero, the file is empty.
   // set the end record id to (0, 0).
   if (pf.endPid() == 0) {
@@ -75,7 +77,7 @@ RC BTreeIndex::open(const string& indexname, char mode)
  */
 RC BTreeIndex::close()
 {
-  RC rc;
+  RC rc = 0;
   char page[PageFile::PAGE_SIZE];
   memset(page,0,PageFile::PAGE_SIZE);
   sprintf(page,"%d %d\n",rootPid,treeHeight);
@@ -83,9 +85,49 @@ RC BTreeIndex::close()
   //setTreeHeight(page, treeHeight);
   if ((rc = pf.write(0, page)) < 0) return rc;
 
+  if ( newPid != pf.endPid() ){
+      printf("newPid != pf.endPid() error!\n");
+      rc = -1;
+  }
   rootPid = 0;
   treeHeight = 0;
-  return pf.close();
+  pf.close();
+  return rc;
+}
+
+/*
+ * Find the leaf node that should contain key
+ * @param key[IN] the key for the value inserted into the index
+ * @param pid[OUT] 
+ * @return error code. 0 if no error
+ */
+
+RC BTreeIndex::findLeafNode(KeyType key, PageId& pid)
+{
+    /*
+    PageId p = rootPid;
+    BTNode  node;
+    RC rc;
+    int i;
+    if(rootPid == -1 || treeHeight<=0){
+        printf("error\n");
+        return -1;
+    }
+    for(i=treeHeight; i>0; i--){
+        printf("findLeaf read page[%d]\n",p);
+        if( (rc = node.read(p,pf)) != 0)  goto ERROR;
+        if( (rc = node.locateChildPtr(key, p)) != 0) goto ERROR;
+    }
+    
+    printf("findLeaf return leafNode:[%d]\n",p);
+    pid = p;    
+    return 0;
+
+ERROR:
+    printf("error\n");
+    return rc;
+    */
+    return 0;
 }
 
 /*
@@ -97,27 +139,66 @@ RC BTreeIndex::close()
 RC BTreeIndex::insert(int key, const RecordId& rid)
 {
   RC   rc;
+  PageId pid;
   char page[PageFile::PAGE_SIZE];
-  BTNonLeafNode root;
+  BTNode root;
+  //printf("\n***************Insert key:"ANSI_COLOR_RED"%d"ANSI_COLOR_RESET" into Tree ******************\n",key);
+  printf("\n**************** Insert key:%d into Tree ******************\n",key);
   if( rootPid == -1){
-      BTLeafNode lnode,rnode;
+      BTNode lnode,rnode;
+      lnode.isLeaf = rnode.isLeaf = true;
       root.initializeRoot(2,key,3);
-      rnode.insert(key, rid);
       
-      root.write(1,pf);
-      lnode.write(2,pf);
-      rnode.write(3,pf);
+      rc = root.write(1,pf);
+      if(rc != 0) goto ERROR;
+      rc = lnode.write(2,pf);
+      if(rc != 0) goto ERROR;
+      rc = rnode.write(3,pf);
+      if(rc != 0) goto ERROR;
+      
+      rnode.insertNonFull(key, rid, newPid, pf);
+      rnode.write(pf);
 
       rootPid = 1; 
       treeHeight = 1;
+      newPid = 4; 
+      if(pf.endPid() != 4){
+          printf("error: pf.endPid() = %d\n",pf.endPid());
+          return -1;
+      }
+      return 0;
   }
-  //memset(page,0,PageFile::PAGE_SIZE);
-  //sprintf(page,"\n%d %d\n",key,rid);
-
-  // write the page to the disk
-  //if ((rc = pf.write(rootPid, page)) < 0) return rc;
-
+  
+  rc = root.read(rootPid, pf);
+  if(rc != 0) goto ERROR;
+  
+  if( root.n == 2*root.getT() - 1){
+      printf("New root:%d, height=%d\n",newPid, treeHeight + 1);
+      //new root
+      BTNode s;
+      s.isLeaf = false;
+      s.n = 0;
+      s.pids[0] = rootPid;
+      rootPid = s.pid = newPid;
+      newPid++;
+      rc = s.splitChild(0,newPid, pf);
+      newPid ++;
+      if(rc != 0) goto ERROR;
+      rc = s.insertNonFull(key, rid, newPid, pf);
+      if(rc != 0) goto ERROR;
+      rc = s.write(rootPid,pf); 
+      if(rc != 0) goto ERROR;
+      treeHeight ++;
+      
+      printTree();
+  }else{
+      root.insertNonFull(key, rid, newPid, pf);
+  }
+  
   return 0;
+ERROR:
+  printf("error\n");
+  return -1;
 }
 
 /*
@@ -157,6 +238,50 @@ RC BTreeIndex::readForward(IndexCursor& cursor, int& key, RecordId& rid)
     return 0;
 }
 
+RC BTreeIndex::printTree()
+{
+    RC rc;
+    int i;
+    queue<BTNode> q;
+    BTNode root;
+    if(rootPid == -1) return -1;
+    rc = root.read(rootPid, pf);
+    if(rc != 0) goto ERROR;
+    q.push(root);
+    printf("\n\n****************** PRINT TREE **********************\n");
+    printf("rootPid:%d pageNum:%d treeHeight:%d\n\n",rootPid,  pf.endPid(), treeHeight);
+    for(i=1; i< pf.endPid(); i++){
+        BTNode s;
+        rc = s.read(i, pf);
+        if(rc != 0) goto ERROR;
+        s.printNode();
+    }
+    printf("\n****************** BFS TREE**********************\n");
+    while(!q.empty()){
+        BTNode u = q.front();
+        q.pop();
+        if(u.isLeaf){
+            printf("----------------->Leaf Node <----------------\n");
+            u.printNode();
+        }else{
+            printf("----------------->Non Leaf Node <----------------\n");
+            u.printNode();
+            for(int i=0; i<=u.n; i++){
+                BTNode v;
+                rc = v.read(u.pids[i], pf);
+                if(rc != 0) goto ERROR;
+                q.push( v );
+            }
+        }
+    }
+    printf("\n****************** PRINT TREE END**********************\n");
+    return 0;
+ERROR:
+    printf("printTree error %d\n",rc);
+    return rc;
+    
+}
+
 static PageId getRootPid(const char* page)
 {
   PageId rootPid;
@@ -188,3 +313,4 @@ static void setTreeHeight(char* page, int height)
   // the second four bytes of a page contains tree height in the page
   memcpy(page, &height, sizeof(int));
 }
+

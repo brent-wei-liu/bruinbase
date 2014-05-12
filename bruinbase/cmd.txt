@@ -4,3 +4,17 @@ Part A: Implement LOAD Command
     select count(*) from movie
     select * from movie
 
+
+GDB:
+
+gdb ./bruinbase
+set args <testcase1.txt
+set  print  pretty on 
+b BTreeNode.cc:156
+b BTreeIndex.cc:144
+
+gdb ./bruinbase
+set args <testcase2.txt
+set  print  pretty on 
+b BTreeNode.cc:156
+

@@ -168,10 +168,11 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
             if(rc < 0) goto LOAD_EXIT;
         }
     }
+    idx.printTree();
 LOAD_EXIT:    
     idx.close();
     rf.close();
-    if(rc<0) cout<<"error"<<endl;
+    if(rc != 0) cout<<"error"<<endl;
     return rc;
 }
 
