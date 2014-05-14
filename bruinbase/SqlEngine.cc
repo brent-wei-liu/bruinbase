@@ -1,10 +1,10 @@
 /**
- * Copyright (C) 2008 by The Regents of the University of California
+ * Copyright (C) 2014 by The Regents of FIU
  * Redistribution of this file is permitted under the terms of the GNU
  * Public License (GPL).
  *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
+ * @author Wei Liu <wliu015@cs.fiu.edu>
+ * @date 5/12/2014
  */
 
 #include <cstdio>
@@ -36,20 +36,28 @@ RC SqlEngine::run(FILE* commandline)
 RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 {
   RecordFile rf;   // RecordFile containing the table
+  BTreeIndex idx;
   RecordId   rid;  // record cursor for table scanning
-
+  
   RC     rc;
   int    key;     
   string value;
   int    count;
   int    diff;
+  bool index;
 
   // open the table file
   if ((rc = rf.open(table + ".tbl", 'r')) < 0) {
     fprintf(stderr, "Error: table %s does not exist\n", table.c_str());
     return rc;
   }
-
+  
+    rc = idx.open(table + ".idx", 'r');
+    if(rc != 0) {
+        cout<<"Do Not Have Index File:"<<table<<".idx"<<endl;
+        index = false;
+    }
+ 
   // scan the table file from the beginning
   rid.pid = rid.sid = 0;
   count = 0;
@@ -62,37 +70,37 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
 
     // check the conditions on the tuple
     for (unsigned i = 0; i < cond.size(); i++) {
-      // compute the difference between the tuple value and the condition value
-      switch (cond[i].attr) {
-      case 1:
-	diff = key - atoi(cond[i].value);
-	break;
-      case 2:
-	diff = strcmp(value.c_str(), cond[i].value);
-	break;
-      }
+        // compute the difference between the tuple value and the condition value
+        switch (cond[i].attr) {
+          case 1:
+            diff = key - atoi(cond[i].value);
+            break;
+          case 2:
+            diff = strcmp(value.c_str(), cond[i].value);
+            break;
+        }
 
-      // skip the tuple if any condition is not met
-      switch (cond[i].comp) {
-      case SelCond::EQ:
-	if (diff != 0) goto next_tuple;
-	break;
-      case SelCond::NE:
-	if (diff == 0) goto next_tuple;
-	break;
-      case SelCond::GT:
-	if (diff <= 0) goto next_tuple;
-	break;
-      case SelCond::LT:
-	if (diff >= 0) goto next_tuple;
-	break;
-      case SelCond::GE:
-	if (diff < 0) goto next_tuple;
-	break;
-      case SelCond::LE:
-	if (diff > 0) goto next_tuple;
-	break;
-      }
+        // skip the tuple if any condition is not met
+        switch (cond[i].comp) {
+          case SelCond::EQ:
+            if (diff != 0) goto next_tuple;
+            break;
+          case SelCond::NE:
+            if (diff == 0) goto next_tuple;
+            break;
+          case SelCond::GT:
+            if (diff <= 0) goto next_tuple;
+            break;
+          case SelCond::LT:
+            if (diff >= 0) goto next_tuple;
+            break;
+          case SelCond::GE:
+            if (diff < 0) goto next_tuple;
+            break;
+          case SelCond::LE:
+            if (diff > 0) goto next_tuple;
+            break;
+        }
     }
 
     // the condition is met for the tuple. 
@@ -126,16 +134,20 @@ RC SqlEngine::select(int attr, const string& table, const vector<SelCond>& cond)
   // close the table file and return
   exit_select:
   rf.close();
+  idx.close();
   return rc;
 }
 
 RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
     RC rc = 0;
+    RecordFile rf;   // RecordFile containing the table
+    string value;
+    KeyType key;
+    KeyType searchKey;
     cout<< "LOAD "<<table<<" FROM "<<loadfile;
     if(index)   cout<<" WITH INDEX";
     cout<<endl;
-    RecordFile rf;
     BTreeIndex idx;
     rc = rf.open( table + ".tbl", 'w');
     if(rc < 0){
@@ -154,7 +166,6 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
     ifstream readfile(loadfile.c_str() );
     string line;
     while(getline(readfile,line)) {
-        int key;
         string value;
         parseLoadLine(line,key,value);
         //printf("key:%d value:%s\n",key,value.c_str());
@@ -162,13 +173,40 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
         RC rc;
         rc = rf.append(key,value,rid);
         if(rc < 0)  goto LOAD_EXIT;
-      
+        
         if(index){   
             rc = idx.insert(key, rid);  
             if(rc < 0) goto LOAD_EXIT;
         }
     }
     idx.printTree();
+
+    searchKey = 88;
+    key = searchKey - 1;
+    RecordId rid;
+    IndexCursor cursor;
+
+    printf("***************  Search Key:%d ****************\n",searchKey);
+    rc = idx.locate(searchKey,cursor);
+    if(rc != 0) goto LOAD_EXIT;
+
+    rc = idx.readForward(cursor, key, rid);
+    if(rc != 0) goto LOAD_EXIT;
+
+    if(searchKey != key){
+        printf("Not found key:%d in index\n",searchKey);
+    }else{
+        printf("Found key:%d in index, record id:{%d,%d}\n",searchKey, rid.pid, rid.sid);
+
+        // read the tuple
+        if ((rc = rf.read(rid, key, value)) < 0) {
+          fprintf(stderr, "Error: while reading a tuple from table.\n");
+          goto LOAD_EXIT;
+        }
+        printf("RECORD key:%d value:%s\n",key, value.c_str());
+    }
+    printf("**********************************************\n");
+
 LOAD_EXIT:    
     idx.close();
     rf.close();

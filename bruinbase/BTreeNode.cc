@@ -114,6 +114,9 @@ RC BTNode::insertNonFull(KeyType key, const RecordId& rid, int &newPid, PageFile
     if(isLeaf){
         while( i>=0 && key< keys[i] ){
             keys[i + 1] = keys[i];
+            rids[i + 1].pid = rids[i].pid;
+            rids[i + 1].sid = rids[i].sid;
+
             i--;
         }
         keys[i+1] = key;
@@ -123,7 +126,8 @@ RC BTNode::insertNonFull(KeyType key, const RecordId& rid, int &newPid, PageFile
         n++;
         printf("insert pid[%d] : key[%d] -> keys[%d]\n",pid, key, i+1);
         printNode();
-        write(pf);
+        rc = write(pf);
+        if(rc != 0) goto ERROR;
         return 0;
     }else{
         BTNode node;
@@ -234,11 +238,40 @@ int BTNode::getT()
  * and output the eid (entry number) whose key value >= searchKey.
  * Remeber that all keys inside a B+tree node should be kept sorted.
  * @param searchKey[IN] the key to search for
- * @param eid[OUT] the entry number that contains a key larger than or equalty to searchKey
+ * @param pf[IN] the page file
+ * @param cursor[OUT] the cursor pointing to the first index entry
+ *                    with the key value.
  * @return 0 if successful. Return an error code if there is an error.
  */
-RC BTNode::locate(int searchKey, int& eid)
-{ return 0; }
+RC BTNode::locate(int searchKey, const PageFile &pf,  IndexCursor& cursor)
+{
+    int i = 0;
+    RC rc = 0;
+    BTNode node;
+    printNode();
+    while( i < n && searchKey > keys[i] ){ //loop until keys[i] >= searchKey or until the end of keys list
+        i++;
+    }
+    if(isLeaf){
+        if(i < n) {
+            cursor.pid = pid;
+            cursor.eid = i;
+        }else{
+            cursor.pid = -1;
+            cursor.eid = -1;
+        }
+    }else{
+        
+        rc = node.read( pids[i], pf);
+        if(rc != 0) goto ERROR;
+        rc = node.locate(searchKey, pf, cursor);
+        if(rc != 0) goto ERROR;
+    }
+    return 0; 
+ERROR:
+    printf("error\n");
+    return rc;
+}
 
 /*
  * Read the (key, rid) pair from the eid entry.
@@ -248,7 +281,20 @@ RC BTNode::locate(int searchKey, int& eid)
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNode::readEntry(int eid, int& key, RecordId& rid)
-{ return 0; }
+{
+    RC rc;
+    if(!isLeaf || eid > n || eid <0){
+        rc = -1;
+        goto ERROR;
+    }
+    key = keys[eid];
+    rid.pid = rids[eid].pid;
+    rid.sid = rids[eid].sid;
+    return 0; 
+ERROR:
+    printf("error\n");
+    return rc;
+}
 
 /*
  * Return the pid of the next slibling node.
@@ -287,15 +333,15 @@ void BTNode::printNode()
     if(isLeaf){
         printf("pid[%d] n[%d] Max_n[%d] t[%d]:\n", pid, n, KEYS_PER_LEAF_PAGE, getT());
         for(i=0; i<n; i++){
-            printf("position:%d\tkey:%d\n",i, keys[i]);
+            printf("position:%d\t\tkey:%d\t\trid:{%d,%d}\n",i, keys[i], rids[i].pid, rids[i].sid);
         }
     }else{
         printf( "pid[%d] n[%d] Max_n[%d] t[%d]:\n", pid, n, KEYS_PER_NONLEAF_PAGE, getT());
-        for(i=0; i<n; i++)
-            printf("%d ",keys[i]);
-        printf("\n");
-        for(i=0; i<=n; i++)
-            printf("%d ",pids[i]);
+        for(i=0; i<n; i++){
+            printf("position:%d\tpid:%d\n",i, pids[i]);
+            printf("position:%d\t\tkey:%d\n",i, keys[i]);
+        }
+        printf("position:%d\tpid:%d\n",i, pids[i]);
     }
     printf("\n");
 }

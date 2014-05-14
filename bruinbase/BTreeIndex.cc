@@ -9,6 +9,7 @@
  
 #include "BTreeIndex.h"
 #include <queue>
+#include <string.h>
 using namespace std;
 
 static PageId getRootPid(const char* page);
@@ -95,40 +96,6 @@ RC BTreeIndex::close()
   return rc;
 }
 
-/*
- * Find the leaf node that should contain key
- * @param key[IN] the key for the value inserted into the index
- * @param pid[OUT] 
- * @return error code. 0 if no error
- */
-
-RC BTreeIndex::findLeafNode(KeyType key, PageId& pid)
-{
-    /*
-    PageId p = rootPid;
-    BTNode  node;
-    RC rc;
-    int i;
-    if(rootPid == -1 || treeHeight<=0){
-        printf("error\n");
-        return -1;
-    }
-    for(i=treeHeight; i>0; i--){
-        printf("findLeaf read page[%d]\n",p);
-        if( (rc = node.read(p,pf)) != 0)  goto ERROR;
-        if( (rc = node.locateChildPtr(key, p)) != 0) goto ERROR;
-    }
-    
-    printf("findLeaf return leafNode:[%d]\n",p);
-    pid = p;    
-    return 0;
-
-ERROR:
-    printf("error\n");
-    return rc;
-    */
-    return 0;
-}
 
 /*
  * Insert (key, RecordId) pair to the index.
@@ -143,7 +110,7 @@ RC BTreeIndex::insert(KeyType key, const RecordId& rid)
   char page[PageFile::PAGE_SIZE];
   BTNode root;
   //printf("\n***************Insert key:"ANSI_COLOR_RED"%d"ANSI_COLOR_RESET" into Tree ******************\n",key);
-  printf("\n**************** Insert key:%d into Tree ******************\n",key);
+  printf("\n**************** Insert key:%d into Tree , RecordId={pid:%d, sid:%d} ******\n",key, rid.pid, rid.sid);
   if( rootPid == -1){
       BTNode lnode,rnode;
       lnode.isLeaf = rnode.isLeaf = true;
@@ -195,6 +162,7 @@ RC BTreeIndex::insert(KeyType key, const RecordId& rid)
       root.insertNonFull(key, rid, newPid, pf);
   }
   
+  printf("\n**************** Insert Key End *****************************************\n\n",key, rid.pid, rid.sid);
   return 0;
 ERROR:
   printf("error\n");
@@ -222,7 +190,26 @@ ERROR:
  */
 RC BTreeIndex::locate(KeyType searchKey, IndexCursor& cursor)
 {
+    RC rc = 0;
+    BTNode root;
+
+    printf("\n\n****************** SEARCH KEY:%d IN INDEX TREE **********************\n",searchKey);
+    printf("rootPid:%d pageNum:%d treeHeight:%d\n\n",rootPid,  pf.endPid(), treeHeight);
+    if( rootPid == -1){
+        printf("Empty Tree.\n");
+        goto ERROR;
+    }
+    rc = root.read(rootPid, pf);
+    if(rc != 0) goto ERROR;
+    rc = root.locate(searchKey, pf, cursor);
+    if(rc != 0) goto ERROR;
+
+    printf("\n\n***********SEARCH INDEX TREE END (pid:%d, sid:%d) *************\n",cursor.pid,cursor.eid);
     return 0;
+
+ERROR:
+    printf("error\n");
+    return rc;
 }
 
 /*
@@ -235,7 +222,17 @@ RC BTreeIndex::locate(KeyType searchKey, IndexCursor& cursor)
  */
 RC BTreeIndex::readForward(IndexCursor& cursor, KeyType& key, RecordId& rid)
 {
+    RC rc;
+    BTNode node;
+    rc = node.read(cursor.pid, pf);
+    if(rc != 0) goto ERROR;
+
+    rc = node.readEntry( cursor.eid, key, rid);
+    if(rc != 0) goto ERROR;
     return 0;
+ERROR:
+    printf("readForward error\n");
+    return rc;
 }
 
 RC BTreeIndex::printTree()

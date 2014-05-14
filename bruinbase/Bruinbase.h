@@ -7,9 +7,11 @@
  * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
  */
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #ifndef BRUINBASE_H
 #define BRUINBASE_H
-
 typedef int RC;
 
 const int RC_FILE_OPEN_FAILED    = -1001;

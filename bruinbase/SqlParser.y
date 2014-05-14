@@ -27,6 +27,22 @@ static void runSelect(int attr, const char* table, const std::vector<SelCond>& c
   fprintf(stderr, "  -- %.3f seconds to run the select command. Read %d pages\n", ((float)(etime - btime))/sysconf(_SC_CLK_TCK), epagecnt - bpagecnt);
 }
 
+
+static void runLoad(const char* table, const char* loadfile, bool index)
+{
+  struct tms tmsbuf;
+  clock_t btime, etime;
+  int     bpagecnt, epagecnt;
+
+  btime = times(&tmsbuf);
+  bpagecnt = PageFile::getPageReadCount();
+  SqlEngine::load(std::string(table), std::string(loadfile), index); 
+  etime = times(&tmsbuf);
+  epagecnt = PageFile::getPageReadCount();
+
+  fprintf(stderr, "  -- %.3f seconds to run the load command. Read %d pages\n", ((float)(etime - btime))/sysconf(_SC_CLK_TCK), epagecnt - bpagecnt);
+}
+
 %}
 
 %union {
@@ -66,12 +82,12 @@ quit_command:
 
 load_command:
 	LOAD table FROM STRING LF { 
-	  SqlEngine::load(std::string($2), std::string($4), false); 
+	  runLoad($2, $4, false); 
 	  free($2);
 	  free($4);
 	}
 	| LOAD table FROM STRING WITH INDEX LF { 
-	  SqlEngine::load(std::string($2), std::string($4), true); 
+	  runLoad($2, $4, true); 
 	  free($2);
 	  free($4);
 	}
@@ -79,12 +95,12 @@ load_command:
 
 select_command:
 	SELECT attributes FROM table LF {
-   	        std::vector<SelCond> conds;
+        std::vector<SelCond> conds;
 		runSelect($2, $4, conds);
 		free($4);
 	}
 	| SELECT attributes FROM table WHERE conditions LF {
-	        runSelect($2, $4, *$6);
+        runSelect($2, $4, *$6);
 	  	free($4);
 	  	for (unsigned i = 0; i < $6->size(); i++) {
 		    free((*$6)[i].value);

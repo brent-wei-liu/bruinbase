@@ -12,6 +12,6 @@ for($i=99; $i>0; $i--){
     my $tmp = $array[$i];
     $array[$i] = $array[$rand];
     $array[$rand] = $tmp;
-    print "$array[$i],\"test3\"\n"
+    print "$array[$i],\"test$array[$i]\"\n"
 }
-print "$array[0],\"test3\""
+print "$array[0],\"test",$array[0],"\""

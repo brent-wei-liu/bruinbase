@@ -14,6 +14,20 @@
 #include "PageFile.h"
 typedef int KeyType;
 /**
+ * The data structure to point to a particular entry at a b+tree leaf node.
+ * An IndexCursor consists of pid (PageId of the leaf node) and
+ * eid (the location of the index entry inside the node).
+ * IndexCursor is used for index lookup and traversal.
+ */
+typedef struct {
+  // PageId of the index entry
+  PageId  pid;
+  // The entry number inside the node
+  int     eid;
+} IndexCursor;
+
+
+/**
  * BTLeafNode: The class representing a B+tree leaf node.
  */
 class BTNode {
@@ -69,16 +83,17 @@ public:
     */
     RC splitChild(int i, int newPid, PageFile&);
 
-   /**
-    * Find the index entry whose key value is larger than or equal to searchKey
-    * and output the eid (entry id) whose key value &gt;= searchKey.
-    * Remember that keys inside a B+tree node are sorted.
-    * @param searchKey[IN] the key to search for.
-    * @param eid[OUT] the entry number that contains a key larger              
-    *                 than or equalty to searchKey.
-    * @return 0 if successful. Return an error code if there is an error.
-    */
-    RC locate(int searchKey, int& eid);
+    /*
+     * Find the entry whose key value is larger than or equal to searchKey
+     * and output the eid (entry number) whose key value >= searchKey.
+     * Remeber that all keys inside a B+tree node should be kept sorted.
+     * @param searchKey[IN] the key to search for
+     * @param pf[IN] the page file
+     * @param cursor[OUT] the cursor pointing to the first index entry
+     *                    with the key value.
+     * @return 0 if successful. Return an error code if there is an error.
+     */
+    RC locate(int searchKey, const PageFile &pf,  IndexCursor& cursor);
 
    /**
     * Read the (key, rid) pair from the eid entry.

@@ -45,7 +45,7 @@ class RecordFile {
  public:
 
   // maximum length of the value field
-  static const int MAX_VALUE_LENGTH = 100;  
+  static const int MAX_VALUE_LENGTH = 10;  
 
   // number of record slots per page
   static const int RECORDS_PER_PAGE = (PageFile::PAGE_SIZE - sizeof(int))/ (sizeof(int) + MAX_VALUE_LENGTH);  
