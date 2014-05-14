@@ -5758,7 +5758,7 @@ position:7		key:99		rid:{12,0}
 
 
 ****************** PRINT TREE END**********************
-***************  Search Key:88 ****************
+***************  Search Key:2076437504 ****************
 
 
 ****************** SEARCH KEY:88 IN INDEX TREE **********************
@@ -5801,6 +5801,103 @@ position:6		key:91		rid:{2,6}
 Found key:88 in index, record id:{7,3}
 RECORD key:88 value:test88
 **********************************************
+
+***************  Search Key:88 ****************
+
+
+****************** SEARCH KEY:101 IN INDEX TREE **********************
+rootPid:16 pageNum:20 treeHeight:2
+
+pid[16] n[1] Max_n[13] t[7]:
+position:0	pid:1
+position:0		key:51
+position:1	pid:17
+
+pid[17] n[7] Max_n[13] t[7]:
+position:0	pid:8
+position:0		key:56
+position:1	pid:14
+position:1		key:61
+position:2	pid:10
+position:2		key:65
+position:3	pid:19
+position:3		key:71
+position:4	pid:4
+position:4		key:77
+position:5	pid:9
+position:5		key:85
+position:6	pid:7
+position:6		key:92
+position:7	pid:13
+
+pid[13] n[8] Max_n[9] t[5]:
+position:0		key:92		rid:{6,7}
+position:1		key:93		rid:{6,0}
+position:2		key:94		rid:{8,2}
+position:3		key:95		rid:{4,0}
+position:4		key:96		rid:{0,6}
+position:5		key:97		rid:{7,0}
+position:6		key:98		rid:{9,5}
+position:7		key:99		rid:{12,0}
+
+
+
+***********SEARCH INDEX TREE END (pid:-1, sid:-1) *************
+Not found key:101 in index
+***************  Range Query, Start Key:101 , End Key****************
+
+
+****************** SEARCH KEY:80 IN INDEX TREE **********************
+rootPid:16 pageNum:20 treeHeight:2
+
+pid[16] n[1] Max_n[13] t[7]:
+position:0	pid:1
+position:0		key:51
+position:1	pid:17
+
+pid[17] n[7] Max_n[13] t[7]:
+position:0	pid:8
+position:0		key:56
+position:1	pid:14
+position:1		key:61
+position:2	pid:10
+position:2		key:65
+position:3	pid:19
+position:3		key:71
+position:4	pid:4
+position:4		key:77
+position:5	pid:9
+position:5		key:85
+position:6	pid:7
+position:6		key:92
+position:7	pid:13
+
+pid[9] n[8] Max_n[9] t[5]:
+position:0		key:77		rid:{4,3}
+position:1		key:78		rid:{3,6}
+position:2		key:79		rid:{11,5}
+position:3		key:80		rid:{4,7}
+position:4		key:81		rid:{0,7}
+position:5		key:82		rid:{11,7}
+position:6		key:83		rid:{4,4}
+position:7		key:84		rid:{8,6}
+
+
+
+***********SEARCH INDEX TREE END (pid:9, sid:3) *************
+RECORD key:80 value:test80
+RECORD key:81 value:test81
+RECORD key:82 value:test82
+RECORD key:83 value:test83
+RECORD key:84 value:test84
+RECORD key:45 value:test45
+RECORD key:85 value:test85
+RECORD key:86 value:test86
+RECORD key:87 value:test87
+RECORD key:88 value:test88
+RECORD key:89 value:test89
+**********************************************
+
 Bruinbase> 45 'test45'
 2 'test2'
 43 'test43'

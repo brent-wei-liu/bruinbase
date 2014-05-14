@@ -29,7 +29,7 @@ BTNode::BTNode(const BTNode& n)
     this->nextPage = n.nextPage;
     this->pid = n.pid;
     memcpy(this->buffer, n.buffer, PageFile::PAGE_SIZE);
-     keys = (KeyType *)(buffer + sizeof(bool) + sizeof(int) +sizeof(int));
+    keys = (KeyType *)(buffer + sizeof(bool) + sizeof(int) +sizeof(int));
     rids = (RecordId *)(keys + KEYS_PER_LEAF_PAGE);
     pids = (PageId *)(keys +  KEYS_PER_NONLEAF_PAGE);
 
@@ -173,53 +173,57 @@ RC BTNode::splitChild(int i, PageId newPid, PageFile& pf)
 {   
     RC rc = 0;
     int j;
-    BTNode z; //new node
-    BTNode y; //child node
+    BTNode newN; //new node
+    BTNode oldN; //child node
     int t;
     printf("Split Child pid:%d  newPid:%d\n",pids[i],newPid);
     if( this->isLeaf == true ) { rc = -1; goto ERROR; }
-    if( (rc = y.read(this->pids[i], pf)) != 0) { rc = -2; goto ERROR; } 
-    z.isLeaf = y.isLeaf;
-    t = z.getT();
-    z.pid = newPid;
-    if( z.isLeaf ){
-        z.n = t;
+    if( (rc = oldN.read(this->pids[i], pf)) != 0) { rc = -2; goto ERROR; } 
+    newN.isLeaf = oldN.isLeaf;
+    t = newN.getT();
+    newN.pid = newPid;
+    if( newN.isLeaf ){
+        newN.n = t;
         for(j=0; j<=t-1; j++){
-            z.keys[j] = y.keys[j+t-1];
-            z.rids[j] = y.rids[j+t-1];
+            newN.keys[j] = oldN.keys[j+t-1];
+            newN.rids[j] = oldN.rids[j+t-1];
         }
-        y.n = y.n - t;
+        oldN.n = oldN.n - t;
         for(j=n; j>=i+1; j--)
             keys[j] = keys[j-1];
         for(j=n+1; j>=i+2; j--)
             pids[j] = pids[j-1];
-        keys[i] = z.keys[0];
-        pids[i+1] = z.pid;
+        keys[i] = newN.keys[0];
+        pids[i+1] = newN.pid;
         n++;
+
+        PageId tmp = oldN.getNextNodePtr();
+        oldN.setNextNodePtr(newN.pid);
+        newN.setNextNodePtr(tmp);
     }else{
-        z.n = t - 1;
+        newN.n = t - 1;
         for(j=0; j<=t-2; j++){
-            z.keys[j] = y.keys[j+t];
+            newN.keys[j] = oldN.keys[j+t];
         }
         for(j=0; j<=t-1; j++){
-            z.pids[j] = y.pids[j+t];
+            newN.pids[j] = oldN.pids[j+t];
         }
 
-        y.n = y.n - z.n - 1;
+        oldN.n = oldN.n - newN.n - 1;
         for(j=n; j>=i+1; j--)
             keys[j] = keys[j-1];
         for(j=n+1; j>=i+2; j--)
             pids[j] = pids[j-1];
-        keys[i] = y.keys[y.n];
-        pids[i+1] = z.pid;
+        keys[i] = oldN.keys[oldN.n];
+        pids[i+1] = newN.pid;
         n++;
     }
     this->printNode();
-    y.printNode();
-    z.printNode();
-    y.write( pf );
+    oldN.printNode();
+    newN.printNode();
+    oldN.write( pf );
     this->write( pf );
-    z.write( pf);
+    newN.write( pf);
     return 0;
 ERROR:
     printf("error:%d\n",rc);
@@ -240,7 +244,7 @@ int BTNode::getT()
  * @param searchKey[IN] the key to search for
  * @param pf[IN] the page file
  * @param cursor[OUT] the cursor pointing to the first index entry
- *                    with the key value.
+ *                    with the key value. Return cursor.pid = -1 if not found.
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNode::locate(int searchKey, const PageFile &pf,  IndexCursor& cursor)
@@ -301,7 +305,9 @@ ERROR:
  * @return the PageId of the next sibling node 
  */
 PageId BTNode::getNextNodePtr()
-{ return 0; }
+{ 
+    return nextPage; 
+}
 
 /*
  * Set the pid of the next slibling node.
@@ -309,7 +315,10 @@ PageId BTNode::getNextNodePtr()
  * @return 0 if successful. Return an error code if there is an error.
  */
 RC BTNode::setNextNodePtr(PageId pid)
-{ return 0; }
+{ 
+    nextPage = pid;
+    return 0; 
+}
 
 
 

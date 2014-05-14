@@ -90,7 +90,7 @@ public:
      * @param searchKey[IN] the key to search for
      * @param pf[IN] the page file
      * @param cursor[OUT] the cursor pointing to the first index entry
-     *                    with the key value.
+     *                    with the key value. Return cursor.pid = -1 if not found.
      * @return 0 if successful. Return an error code if there is an error.
      */
     RC locate(int searchKey, const PageFile &pf,  IndexCursor& cursor);

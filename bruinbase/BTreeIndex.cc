@@ -115,7 +115,9 @@ RC BTreeIndex::insert(KeyType key, const RecordId& rid)
       BTNode lnode,rnode;
       lnode.isLeaf = rnode.isLeaf = true;
       root.initializeRoot(2,key,3);
-      
+      lnode.setNextNodePtr(3);
+      rnode.setNextNodePtr(-1);
+
       rc = root.write(1,pf);
       if(rc != 0) goto ERROR;
       rc = lnode.write(2,pf);
@@ -227,8 +229,15 @@ RC BTreeIndex::readForward(IndexCursor& cursor, KeyType& key, RecordId& rid)
     rc = node.read(cursor.pid, pf);
     if(rc != 0) goto ERROR;
 
+    if(!node.isLeaf) goto ERROR;
     rc = node.readEntry( cursor.eid, key, rid);
     if(rc != 0) goto ERROR;
+
+    cursor.eid ++;
+    if(cursor.eid >= BTNode::KEYS_PER_LEAF_PAGE){
+        cursor.pid = node.getNextNodePtr();
+        cursor.eid = 0;
+    }
     return 0;
 ERROR:
     printf("readForward error\n");

@@ -142,9 +142,10 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
 {
     RC rc = 0;
     RecordFile rf;   // RecordFile containing the table
+    RecordId rid;
+    IndexCursor cursor;
     string value;
-    KeyType key;
-    KeyType searchKey;
+    KeyType key, searchKey, startKey, endKey;
     cout<< "LOAD "<<table<<" FROM "<<loadfile;
     if(index)   cout<<" WITH INDEX";
     cout<<endl;
@@ -180,32 +181,86 @@ RC SqlEngine::load(const string& table, const string& loadfile, bool index)
         }
     }
     idx.printTree();
-
+    
+    printf("***************  Search Key:%d ****************\n",searchKey);
     searchKey = 88;
     key = searchKey - 1;
-    RecordId rid;
-    IndexCursor cursor;
-
-    printf("***************  Search Key:%d ****************\n",searchKey);
+    
     rc = idx.locate(searchKey,cursor);
     if(rc != 0) goto LOAD_EXIT;
 
-    rc = idx.readForward(cursor, key, rid);
-    if(rc != 0) goto LOAD_EXIT;
-
-    if(searchKey != key){
+    if(cursor.pid == -1){
         printf("Not found key:%d in index\n",searchKey);
     }else{
-        printf("Found key:%d in index, record id:{%d,%d}\n",searchKey, rid.pid, rid.sid);
+        rc = idx.readForward(cursor, key, rid);
+        if(rc != 0) goto LOAD_EXIT;
 
+        if(searchKey != key ){
+            printf("Not found key:%d in index\n",searchKey);
+        }else{
+            printf("Found key:%d in index, record id:{%d,%d}\n",searchKey, rid.pid, rid.sid);
+
+            // read the tuple
+            if ((rc = rf.read(rid, key, value)) < 0) {
+              fprintf(stderr, "Error: while reading a tuple from table.\n");
+              goto LOAD_EXIT;
+            }
+            printf("RECORD key:%d value:%s\n",key, value.c_str());
+        }
+        printf("**********************************************\n\n");
+    }
+
+    printf("***************  Search Key:%d ****************\n",searchKey);
+    searchKey = 101;
+    key = searchKey - 1;
+    
+    rc = idx.locate(searchKey,cursor);
+    if(rc != 0) goto LOAD_EXIT;
+
+    if(cursor.pid == -1){
+        printf("Not found key:%d in index\n",searchKey);
+    }else{
+        rc = idx.readForward(cursor, key, rid);
+        if(rc != 0) goto LOAD_EXIT;
+
+        if(searchKey != key ){
+            printf("Not found key:%d in index\n",searchKey);
+        }else{
+            printf("Found key:%d in index, record id:{%d,%d}\n",searchKey, rid.pid, rid.sid);
+
+            // read the tuple
+            if ((rc = rf.read(rid, key, value)) < 0) {
+              fprintf(stderr, "Error: while reading a tuple from table.\n");
+              goto LOAD_EXIT;
+            }
+            printf("RECORD key:%d value:%s\n",key, value.c_str());
+        }
+        printf("**********************************************\n\n");
+    }
+
+    printf("***************  Range Query, Start Key:%d , End Key****************\n",searchKey);
+    startKey = 80;
+    endKey = 90;
+    
+    rc = idx.locate(startKey, cursor);
+    if(rc != 0) goto end_query;
+    if(cursor.pid == -1)    goto end_query;
+    rc = idx.readForward(cursor, key, rid);
+    if(rc != 0)  goto end_query;
+
+    while(key < endKey && cursor.pid != -1 ){
         // read the tuple
         if ((rc = rf.read(rid, key, value)) < 0) {
           fprintf(stderr, "Error: while reading a tuple from table.\n");
-          goto LOAD_EXIT;
+          break;
         }
         printf("RECORD key:%d value:%s\n",key, value.c_str());
+
+        rc = idx.readForward(cursor, key, rid);
+        if(rc != 0)  break;
     }
-    printf("**********************************************\n");
+end_query:
+        printf("**********************************************\n\n");
 
 LOAD_EXIT:    
     idx.close();
