@@ -340,12 +340,12 @@ void BTNode::printNode()
 {
     int i;
     if(isLeaf){
-        printf("pid[%d] n[%d] Max_n[%d] t[%d]:\n", pid, n, KEYS_PER_LEAF_PAGE, getT());
+        printf("pid:%d n:%d Max_n:%d t:%d nextPage:%d\n", pid, n, KEYS_PER_LEAF_PAGE, getT(), nextPage);
         for(i=0; i<n; i++){
             printf("position:%d\t\tkey:%d\t\trid:{%d,%d}\n",i, keys[i], rids[i].pid, rids[i].sid);
         }
     }else{
-        printf( "pid[%d] n[%d] Max_n[%d] t[%d]:\n", pid, n, KEYS_PER_NONLEAF_PAGE, getT());
+        printf( "pid:%d n:%d Max_n:%d t:%d\n", pid, n, KEYS_PER_NONLEAF_PAGE, getT());
         for(i=0; i<n; i++){
             printf("position:%d\tpid:%d\n",i, pids[i]);
             printf("position:%d\t\tkey:%d\n",i, keys[i]);

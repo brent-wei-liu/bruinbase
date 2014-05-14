@@ -234,7 +234,7 @@ RC BTreeIndex::readForward(IndexCursor& cursor, KeyType& key, RecordId& rid)
     if(rc != 0) goto ERROR;
 
     cursor.eid ++;
-    if(cursor.eid >= BTNode::KEYS_PER_LEAF_PAGE){
+    if(cursor.eid >= node.n){
         cursor.pid = node.getNextNodePtr();
         cursor.eid = 0;
     }
