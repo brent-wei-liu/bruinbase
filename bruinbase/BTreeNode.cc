@@ -124,26 +124,26 @@ RC BTNode::insertNonFull(KeyType key, const RecordId& rid, int &newPid, PageFile
         rids[i+1].sid = rid.sid;
         
         n++;
-        printf("insert pid[%d] : key[%d] -> keys[%d]\n",pid, key, i+1);
-        printNode();
+        DEBUG('i',"insert pid[%d] : key[%d] -> keys[%d]\n",pid, key, i+1);
+        if(DebugIsEnabled('i')) printNode();
         rc = write(pf);
         if(rc != 0) goto ERROR;
         return 0;
     }else{
         BTNode node;
-        printf("insert to non leaf node pid[%d] : key[%d]\n",pid, key);
-        printNode();
+        DEBUG('i',"insert to non leaf node pid[%d] : key[%d]\n",pid, key);
+        if(DebugIsEnabled('i')) printNode();
         while(i>=0 && key < keys[i]) i--;
         i++;
-        printf("i:%d\n\n",i);
+        DEBUG('i',"i:%d\n\n",i);
         rc = node.read(pids[i], pf);
         if(rc != 0) goto ERROR;
         if(node.isLeaf){
-            printf("Read Leaf Node page:\n");
+            DEBUG('i',"Read Leaf Node page:\n");
         }else{
-            printf("Read Non Leaf Node page:\n");
+            DEBUG('i',"Read Non Leaf Node page:\n");
         }
-        node.printNode();
+        if(DebugIsEnabled('i')) node.printNode();
 
         if(node.n == 2*node.getT() - 1){
             splitChild(i, newPid, pf);
@@ -176,7 +176,7 @@ RC BTNode::splitChild(int i, PageId newPid, PageFile& pf)
     BTNode newN; //new node
     BTNode oldN; //child node
     int t;
-    printf("Split Child pid:%d  newPid:%d\n",pids[i],newPid);
+    DEBUG('i',"Split Child pid:%d  newPid:%d\n",pids[i],newPid);
     if( this->isLeaf == true ) { rc = -1; goto ERROR; }
     if( (rc = oldN.read(this->pids[i], pf)) != 0) { rc = -2; goto ERROR; } 
     newN.isLeaf = oldN.isLeaf;
@@ -218,9 +218,11 @@ RC BTNode::splitChild(int i, PageId newPid, PageFile& pf)
         pids[i+1] = newN.pid;
         n++;
     }
-    this->printNode();
-    oldN.printNode();
-    newN.printNode();
+    if(DebugIsEnabled('i')){
+        this->printNode();
+        oldN.printNode();
+        newN.printNode();
+    }
     oldN.write( pf );
     this->write( pf );
     newN.write( pf);
@@ -252,7 +254,7 @@ RC BTNode::locate(int searchKey, const PageFile &pf,  IndexCursor& cursor)
     int i = 0;
     RC rc = 0;
     BTNode node;
-    printNode();
+    if(DebugIsEnabled('s')) printNode();
     while( i < n && searchKey > keys[i] ){ //loop until keys[i] >= searchKey or until the end of keys list
         i++;
     }
@@ -327,7 +329,7 @@ RC BTNode::initializeRoot(PageId pid1, KeyType key, PageId pid2)
 {
     int add1 = (char *)keys - ((char *)buffer);
     int add2 = (char *)pids - ((char *)buffer);
-    printf("initializeRoot keys[0x%x]:0x%x pids[0x%x]\n",add1,key,add2);
+    DEBUG('i',"initializeRoot keys[0x%x]:0x%x pids[0x%x]\n",add1,key,add2);
     keys[0] = key;
     pids[0] = pid1;
     pids[1] = pid2;
@@ -345,7 +347,7 @@ void BTNode::printNode()
             printf("position:%d\t\tkey:%d\t\trid:{%d,%d}\n",i, keys[i], rids[i].pid, rids[i].sid);
         }
     }else{
-        printf( "pid:%d n:%d Max_n:%d t:%d\n", pid, n, KEYS_PER_NONLEAF_PAGE, getT());
+        printf("pid:%d n:%d Max_n:%d t:%d\n", pid, n, KEYS_PER_NONLEAF_PAGE, getT());
         for(i=0; i<n; i++){
             printf("position:%d\tpid:%d\n",i, pids[i]);
             printf("position:%d\t\tkey:%d\n",i, keys[i]);
