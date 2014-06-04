@@ -65,7 +65,7 @@ class BTreeIndex {
    * with the key value
    * @return error code. 0 if no error.
    */
-  RC locate(KeyType searchKey, IndexCursor& cursor);
+  RC locate(KeyType searchKey, IndexCursor& cursor) const ;
 
   /**
    * Read the (key, rid) pair at the location specified by the index cursor,
@@ -75,7 +75,7 @@ class BTreeIndex {
    * @param rid[OUT] the RecordId stored at the index cursor location
    * @return error code. 0 if no error
    */
-  RC readForward(IndexCursor& cursor, KeyType& key, RecordId& rid);
+  RC readForward(IndexCursor& cursor, KeyType& key, RecordId& rid) const;
   
   int newPid;
   RC printTree();
