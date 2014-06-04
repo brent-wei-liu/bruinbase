@@ -14,7 +14,8 @@ b BTreeNode.cc:156
 b BTreeIndex.cc:144
 
 gdb ./bruinbase
-set args <testcase2.txt
+set args -d p <testcase3.txt
 set  print  pretty on 
-b BTreeNode.cc:156
+b main.cc:17
+b Bruinbase.cc:47
 

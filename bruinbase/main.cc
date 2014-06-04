@@ -1,19 +1,25 @@
-/**
- * Copyright (C) 2008 by The Regents of the University of California
- * Redistribution of this file is permitted under the terms of the GNU
- * Public License (GPL).
- *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
- */
  
 #include "Bruinbase.h"
 #include "SqlEngine.h"
 
-int main()
+int main(int argc, char **argv)
 {
-  // run the SQL engine taking user commands from standard input (console).
-  SqlEngine::run(stdin);
+    int argCount;
+    char* debugArgs = "";
+    for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
+        argCount = 1;
+        if (!strcmp(*argv, "-d")) {
+            if (argc == 1)
+            debugArgs = "+";    // turn on all debug flags
+            else {
+                debugArgs = *(argv + 1);
+                argCount = 2;
+            }
+        }
+    }
+    DebugInit(debugArgs);           // initialize DEBUG messages
+    // run the SQL engine taking user commands from standard input (console).
+    SqlEngine::run(stdin);
 
-  return 0;
+    return 0;
 }

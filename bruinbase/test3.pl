@@ -3,11 +3,12 @@ use strict;
 my $pl = 0;
 my @array;
 my $i;
-for($i=0; $i<100; $i++){
+my $max = 10000000 ;
+for($i=0; $i<=$max; $i++){
     $array[$i]=$i;
 }
 
-for($i=99; $i>0; $i--){
+for($i=$max; $i>0; $i--){
     my $rand =int(rand($i+1));
     my $tmp = $array[$i];
     $array[$i] = $array[$rand];
