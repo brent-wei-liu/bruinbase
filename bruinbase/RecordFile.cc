@@ -199,7 +199,7 @@ RC RecordFile::append(int key, const std::string& value, RecordId& rid)
   }
     
   // write the record to the first empty slot 
-  printf("Write to slot: (pid,sid)=(%d,%d)  RecordFile::RECORDS_PER_PAGE=%d\n",erid.pid, erid.sid,  RecordFile::RECORDS_PER_PAGE);
+  DEBUG('i',"Write to slot: (pid,sid)=(%d,%d)  RecordFile::RECORDS_PER_PAGE=%d\n",erid.pid, erid.sid,  RecordFile::RECORDS_PER_PAGE);
   writeSlot(page, erid.sid, key, value);
 
   // the first four bytes in the page stores # records in the page.

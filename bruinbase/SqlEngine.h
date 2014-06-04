@@ -67,6 +67,17 @@ class SqlEngine {
    * @return error code. 0 if no error
    */
   static RC parseLoadLine(const std::string& line, int& key, std::string& value);
+
+ private:
+  static RC selectWithIndex(int attr, const std::string& table, const std::vector<SelCond>& cond, 
+        const BTreeIndex &idx, 
+        const RecordFile &rf);
+  static RC selectWithoutIndex(int attr, const std::string& table, 
+        const std::vector<SelCond>& cond, 
+        const RecordFile &rf);
+
+
+
 };
 
 #endif /* SQLENGINE_H */
