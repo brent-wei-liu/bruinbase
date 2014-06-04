@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2008 by The Regents of the University of California
- * Redistribution of this file is permitted under the terms of the GNU
- * Public License (GPL).
- *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
- */
 
 #ifndef PAGEFILE_H
 #define PAGEFILE_H
@@ -21,7 +13,8 @@ typedef int PageId;
 class PageFile {
  public:
 
-  static const int PAGE_SIZE =128 ;    // the size of a page is 1KB
+  static const int PAGE_SIZE = 128   ;    // the size of a page is 1KB
+   // static const int PAGE_SIZE = 4096  ;    // the size of a page is 1KB
 
   PageFile();
   PageFile(const std::string& filename, char mode);
@@ -92,7 +85,7 @@ class PageFile {
   //
   // the following set of members implement LRU caching 
   //
-  static const int CACHE_COUNT = 10;
+  static const int CACHE_COUNT = 10  ;
 
   static int cacheClock; // clock tick counter for LRU policy
 

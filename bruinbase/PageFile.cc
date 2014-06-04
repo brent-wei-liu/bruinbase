@@ -1,11 +1,3 @@
-/**
- * Copyright (C) 2008 by The Regents of the University of California
- * Redistribution of this file is permitted under the terms of the GNU
- * Public License (GPL).
- *
- * @author Junghoo "John" Cho <cho AT cs.ucla.edu>
- * @date 3/24/2008
- */
 
 #include "Bruinbase.h"
 #include "PageFile.h"
@@ -132,7 +124,7 @@ RC PageFile::write(PageId pid, const void* buffer)
 RC PageFile::read(PageId pid, void* buffer) const
 {
   RC rc;
-
+  DEBUG('p',"Read file fd:%d pid:%d ",fd ,pid);
   if (pid < 0 || pid >= epid) return RC_INVALID_PID; 
 
   //
@@ -143,9 +135,11 @@ RC PageFile::read(PageId pid, void* buffer) const
         readCache[i].lastAccessed != 0) {
        memcpy(buffer, readCache[i].buffer, PAGE_SIZE);
        readCache[i].lastAccessed = ++cacheClock;
+       DEBUG('p',", cache hit\n");
        return 0;
     }
   }
+  DEBUG('p',"\n");
 
   // seek to the page
   if ((rc = seek(pid) < 0)) return rc;
@@ -173,6 +167,6 @@ RC PageFile::read(PageId pid, void* buffer) const
 
   // increase the page read count
   readCount++;
-
+   
   return 0;
 }
